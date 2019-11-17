@@ -1,4 +1,4 @@
-FROM balenalib/armv7hf-debian:stretch-run
+FROM balenalib/armv7hf-alpine-node:latest
 
 ENV HOME=/root \
 	DEBIAN_FRONTEND=noninteractive \
