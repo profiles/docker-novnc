@@ -1,0 +1,8 @@
+image: rugarci/novnc:latest
+manifests:
+  -
+    image: rugarci/novnc:armhf
+    platform:
+      architecture: arm
+      variant: armv7l
+      os: linux
