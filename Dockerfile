@@ -1,5 +1,4 @@
-FROM alpine:3.6
-LABEL maintainer=doug.warren@gmail.com
+FROM balenalib/armv7hf-debian:stretch-run
 
 ENV HOME=/root \
 	DEBIAN_FRONTEND=noninteractive \
