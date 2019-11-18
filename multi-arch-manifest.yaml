@@ -4,5 +4,5 @@ manifests:
     image: rugarci/novnc:armv7hf
     platform:
       architecture: arm
-      variant: armv7l
+      variant: arm32v7
       os: linux
