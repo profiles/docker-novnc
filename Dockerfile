@@ -21,7 +21,7 @@ RUN apk --update --upgrade add git bash supervisor nodejs nodejs-npm \
 	&& sed -i -- "s/ps -p/ps -o pid | grep/g" /root/noVNC/utils/launch.sh \
 	&& apk del git nodejs-npm nodejs
 	
-RUN mv /root/noVNC/build/vnc.html /root/noVNC/build/index.html
+RUN cp /root/noVNC/build/vnc.html /root/noVNC/build/index.html
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
