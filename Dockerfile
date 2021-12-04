@@ -1,4 +1,4 @@
-FROM balenalib/armv7hf-alpine-node:latest
+FROM alpine:3.12.9
 
 ENV HOME=/root \
 	DEBIAN_FRONTEND=noninteractive \
