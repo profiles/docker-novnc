@@ -1,35 +1,35 @@
 FROM alpine:3.12.9
 
-# Setup environment variables
-ENV HOME=/root \
-    DEBIAN_FRONTEND=noninteractive \
-    LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8 \
-    LC_ALL=C.UTF-8 \
-    DISPLAY=:0.0 \
-    DISPLAY_WIDTH=1024 \
-    DISPLAY_HEIGHT=768
+ENV NOVNC_TAG="v1.3.0"
 
-RUN \
-    # Install required packages
-    echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-    apk --update --upgrade add \
-      bash \
-      fluxbox \
-      git \
-      supervisor \
-      xvfb \
-      x11vnc \
-      && \
-    # Install noVNC
-    git clone --depth 1 https://github.com/novnc/noVNC.git /root/noVNC && \
-    git clone --depth 1 https://github.com/novnc/websockify /root/noVNC/utils/websockify && \
-    rm -rf /root/noVNC/.git && \
-    rm -rf /root/noVNC/utils/websockify/.git && \
-    apk del git && \
-    sed -i -- "s/ps -p/ps -o pid | grep/g" /root/noVNC/utils/launch.sh
+ENV WEBSOCKIFY_TAG="v0.10.0"
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-EXPOSE 8080
+ENV VNC_SERVER "localhost:5900"
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+RUN apk --no-cache --update --upgrade add \
+        bash \
+        python3 \
+        python3-dev \
+        gfortran \
+        py-pip \
+        build-base \
+        procps \
+        git
+
+RUN pip install --no-cache-dir numpy
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+RUN git config --global advice.detachedHead false && \
+    git clone https://github.com/novnc/noVNC --branch ${NOVNC_TAG} /root/noVNC && \
+    git clone https://github.com/novnc/websockify --branch ${WEBSOCKIFY_TAG} /root/noVNC/utils/websockify
+
+RUN cp /root/noVNC/vnc.html /root/noVNC/index.html
+
+RUN sed -i "/wait ${proxy_pid}/i if [ -n \"\$AUTOCONNECT\" ]; then sed -i \"s/'autoconnect', false/'autoconnect', '\$AUTOCONNECT'/\" /root/noVNC/app/ui.js; fi" /root/noVNC/utils/novnc_proxy
+
+RUN sed -i "/wait ${proxy_pid}/i if [ -n \"\$VNC_PASSWORD\" ]; then sed -i \"s/WebUtil.getConfigVar('password')/'\$VNC_PASSWORD'/\" /root/noVNC/app/ui.js; fi" /root/noVNC/utils/novnc_proxy
+
+RUN sed -i "/wait ${proxy_pid}/i if [ -n \"\$VIEW_ONLY\" ]; then sed -i \"s/UI.rfb.viewOnly = UI.getSetting('view_only');/UI.rfb.viewOnly = \$VIEW_ONLY;/\" /root/noVNC/app/ui.js; fi" /root/noVNC/utils/novnc_proxy
+
+ENTRYPOINT [ "bash", "-c", "/root/noVNC/utils/novnc_proxy --vnc ${VNC_SERVER}" ]
