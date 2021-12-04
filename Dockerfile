@@ -14,8 +14,8 @@ RUN git clone https://github.com/novnc/noVNC.git /root/noVNC \
 RUN rm -rf /root/noVNC/.git \
 	&& rm -rf /root/noVNC/utils/websockify/.git
 RUN cd /root/noVNC \
-	&& npm install npm@latest \
-	&& npm install \
+	&& npm install -f npm@latest \
+	&& npm install -f \
 	&& ./utils/use_require.js --as commonjs --with-app
 RUN cp /root/noVNC/node_modules/requirejs/require.js /root/noVNC/build \
 	&& sed -i -- "s/ps -p/ps -o pid | grep/g" /root/noVNC/utils/launch.sh
