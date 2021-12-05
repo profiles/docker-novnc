@@ -15,6 +15,8 @@ RUN apk --no-cache --update --upgrade add \
         build-base \
         procps \
         git
+        
+RUN pip install --upgrade pip setuptools wheel
 
 RUN pip install --no-cache-dir numpy
 
