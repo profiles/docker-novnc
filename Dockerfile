@@ -38,8 +38,8 @@ RUN pip install --no-cache-dir numpy
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN git config --global advice.detachedHead false && \
-    git clone https://github.com/novnc/noVNC --branch ${NOVNC_TAG} /root/noVNC && \
-    git clone https://github.com/novnc/websockify --branch ${WEBSOCKIFY_TAG} /root/noVNC/utils/websockify
+    git clone https://github.com/novnc/noVNC --branch $NOVNC_TAG /root/noVNC && \
+    git clone https://github.com/novnc/websockify --branch $WEBSOCKIFY_TAG /root/noVNC/utils/websockify
 
 RUN cp /root/noVNC/vnc.html /root/noVNC/index.html
 
