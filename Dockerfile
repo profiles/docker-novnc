@@ -1,12 +1,27 @@
-FROM alpine:3.12.9
+ARG ALPINE_BASE="3.12.9"
+ARG NOVNC_TAG="v1.3.0"
+ARG WEBSOCKIFY_TAG="v0.10.0"
+ARG BUILD_DATE
+ARG VERSION
+ARG VCS_REF
 
-ENV NOVNC_TAG="v1.3.0"
+FROM alpine:${ALPINE_BASE}
 
-ENV WEBSOCKIFY_TAG="v0.10.0"
-
+LABEL org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name="docker-snapserver" \
+    org.label-schema.version=$VERSION \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-url="https://github.com/rugarci/docker-snapserver" \
+    org.label-schema.vcs-type="Git" \
+    org.label-schema.schema-version="1.0"
+    org.opencord.component.novnc.version=$NOVNC_TAG \
+    org.opencord.component.novnc.vcs-url="https://github.com/novnc/noVNC" \
+    org.opencord.component.websockify.version=$WEBSOCKIFY_TAG \
+    org.opencord.component.websockify.vcs-url="https://github.com/novnc/websockify"
+    
 ENV VNC_SERVER "localhost:5900"
 
-RUN apk --no-cache --update --upgrade add \
+RUN apk --no-cache add \
         bash \
         python3 \
         python3-dev \
